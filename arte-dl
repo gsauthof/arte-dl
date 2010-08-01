@@ -1,0 +1,102 @@
+#!/usr/bin/env python
+
+import subprocess
+import urllib2
+import re
+import sys
+
+std_headers = {
+        'User-Agent': 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.7) Gecko/20100720 Firefox/3.6.7',
+        'Accept-Charset': 'ISO-8859-1,utf-8;q=0.7,*;q=0.7',
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+        'Accept-Language': 'en-us,en;q=0.5',
+}
+
+id_re = re.compile('{ajaxUrl:.(/../do_delegate/videos/)([^,]+),view,commentForm.html')
+
+url_re = re.compile('<url quality="([^"]+)">([^<]+)<')
+
+retry_re = re.compile('Download may be incomplete \([^)]+\), try resuming')
+
+errors = False
+
+def fetch(url):
+  request = urllib2.Request(url, None, std_headers)
+  answer = urllib2.urlopen(request)
+  str = answer.read()
+  lines = str.splitlines()
+  return lines
+
+#<url quality="EQ">http://artestras.wmod.rd.llnw.net/geo/arte7/EUR_DE_FR/arteprod/A7_SGT_ENC_12_042206-000-A_PG_EQ_DE.mp4</url>
+#<url quality="hd">rtmp://artestras.fcod.llnwd.net/a3903/o35/MP4:geo/videothek/EUR_DE_FR/arteprod/A7_SGT_ENC_04_042206-000-A_PG_HQ_DE?h=86f507add6f94b584f54722a08b75cef</url>
+#<url quality="sd">rtmp://artestras.fcod.llnwd.net/a3903/o35/MP4:geo/videothek/EUR_DE_FR/arteprod/A7_SGT_ENC_02_042206-000-A_PG_MQ_DE?h=f31e2b017f30ca3c8d44e5410a9bf272</url>
+
+def flvfetch(url, name):
+  for i in range(10):
+    out = ""
+    print 'Download %s (try: %d)' % (name, i)
+    p = subprocess.Popen(
+      [ 'flvstreamer',
+        '-r', url,
+        '-e',
+        '--flv',
+        name ], stdout=subprocess.PIPE, stderr=subprocess.STDOUT )
+    (out, ret) = p.communicate()
+    cont = False
+    #for line in out:
+    line = out
+    match = retry_re.search(line)
+    if match:
+      cont = True
+    if not cont:
+      break
+  
+
+def getvideos(xml, name):
+  urls = []
+  for line in xml:
+    match = url_re.search(line)
+    if match:
+      urls.append((match.group(1), match.group(2)))
+  if len(urls) == 0:
+    return
+  for url in urls:
+    found = False
+    if url[0] == 'hd':
+      flvfetch(url[1], name)
+      found = True
+      break
+  if found == False:
+    errors = True
+    print >>sys.stderr, 'Could not find HD url for %s' % name
+
+
+def download(url):
+  lines = fetch(url)
+  for line in lines:
+    match = id_re.search(line)
+    if (match):
+      xmlurl = 'http://videos.arte.tv%s%s,view,asPlayerXml.xml' % (match.group(1), match.group(2))
+      name = '%s.m4v' % match.group(2)
+      xml = fetch(xmlurl)
+      getvideos(xml, name)
+      break
+
+# call e.g.:
+# ./arte-dl http://videos.arte.tv/de/videos/hauptsache_haltbar-3334828.html
+
+if __name__ == '__main__':
+  import optparse
+  opts = optparse.OptionParser(
+    usage='Usage: %prog  (option)* (url)+',
+    version='tip hash',
+    conflict_handler='resolve',
+  )
+  opts.add_option('-h', '--help',
+    action='help', help='this screen')
+  (o, args) = opts.parse_args()
+  for url in args:
+    download(url)
+  sys.exit(errors)
+
+
