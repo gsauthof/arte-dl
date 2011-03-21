@@ -8,6 +8,8 @@ import subprocess
 import urllib2
 import re
 import sys
+import os.path
+import time
 
 std_headers = {
         'User-Agent': 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.7) Gecko/20100720 Firefox/3.6.7',
@@ -21,6 +23,8 @@ id_re = re.compile('{ajaxUrl:.(/../do_delegate/videos/)([^,]+),view,commentForm.
 url_re = re.compile('<url quality="([^"]+)">([^<]+)<')
 
 retry_re = re.compile('Download may be incomplete \([^)]+\), try resuming')
+
+packerr_re = re.compile('ERROR: ReadPacket, failed to read RTMP packet header')
 
 errors = False
 
@@ -36,6 +40,8 @@ def fetch(url):
 #<url quality="sd">rtmp://artestras.fcod.llnwd.net/a3903/o35/MP4:geo/videothek/EUR_DE_FR/arteprod/A7_SGT_ENC_02_042206-000-A_PG_MQ_DE?h=f31e2b017f30ca3c8d44e5410a9bf272</url>
 
 def flvfetch(url, name):
+ n = 0
+ for a in range(100):
   for i in range(10):
     out = ""
     print 'Download %s (try: %d)' % (name, i)
@@ -47,13 +53,25 @@ def flvfetch(url, name):
         name ], stdout=subprocess.PIPE, stderr=subprocess.STDOUT )
     (out, ret) = p.communicate()
     cont = False
-    #for line in out:
     line = out
     match = retry_re.search(line)
     if match:
       cont = True
+    else:
+      match = packerr_re.search(line)
+      if match:
+        cont = True
+        print 'Packet error - retrying'
+        time.sleep(4)
     if not cont:
       break
+
+  t = os.path.getsize(name)
+  if n != 0 and t == n:
+    break
+  n = t
+  print 'Trying to download more (filesize: %d MiB).' % (n/1024.0/1024.0)
+  time.sleep(3)
   
 
 def getvideos(xml, name):
