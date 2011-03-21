@@ -1,18 +1,20 @@
-arte-dl is a command line tool for downloading  embedded videos
+-*- markdown -*-
+
+arte-dl is a command line tool for downloading embedded videos
 from arte.tv to be able to view the stuff without having to use
 Adobe Flash.
 
-== Example ==
+## Example ##
 
-$ ./arte-dl (URL)+
+    $ ./arte-dl (URL)+
 
 e.g.
 
-$ ./arte http://videos.arte.tv/de/videos/leben_ohne_schadstoffe_-3334834.html
-Download leben_ohne_schadstoffe_-3334838.m4v (try: 0)
-Download leben_ohne_schadstoffe_-3334838.m4v (try: 1)
+    $ ./arte http://videos.arte.tv/de/videos/leben_ohne_schadstoffe_-3334834.html
+    Download leben_ohne_schadstoffe_-3334838.m4v (try: 0)
+    Download leben_ohne_schadstoffe_-3334838.m4v (try: 1)
 
-== Motivation ==
+## Motivation ##
 
 Arte is this public television channel, payed by the people of
 germany/france. Some content is available for 7 (sic!) days at
@@ -24,7 +26,7 @@ platforms and the mental-pain trying to imagine, why someone
 would think that it is a good idea to use flash for distributing
 videos.
 
-== Background ==
+## Background ##
 
 The tool is written in python (2.6.5 works). As dependency the
 tool flvstreamer (1.6 works) is needed, which is on current linux
@@ -33,32 +35,27 @@ flvstreamer).
 
 The license is GPL v3+.
 
-The name is inspired by the nice tool youtube-dl 
-( http://bitbucket.org/rg3/youtube-dl/wiki/Home ).
+The name is inspired by the nice tool [youtube-dl](https://github.com/rg3/youtube-dl).
 
-== Feedback ==
+## Feedback ##
 
 I appreciate feedback and comments:
 
-gsauthof@techfak.uni-bielefeld.de
-gsauthof@sdf.lonestar.org
+    gsauthof@techfak.uni-bielefeld.de
+    gsauthof@sdf.lonestar.org
 
-== Related Stuff ==
+## Related Stuff ##
 
-It looks like the Mediathek Java GUI supports arte.tv content
-(didn't try it):
+It looks like the [Mediathek Java GUI](http://zdfmediathk.sourceforge.net/index.html)
+supports arte.tv content (didn't try it).
 
-http://zdfmediathk.sourceforge.net/index.html
+Someone wrote an [example php-script](http://www.galipe.net/example/plussept.php)
+how to extract useful data from the arte feeds.
 
-Someone wrote an example php-script how to extract useful data
-from the arte feeds:
-
-http://www.galipe.net/example/plussept.php
-
-Some french threads mention a python GTK inteface for arte and
+Some [french][1] [threads][2] mention a python GTK inteface for arte and
 some totem integration:
 
-http://forum.ubuntu-fr.org/viewtopic.php?id=395921&p=1
-http://forum.ubuntu-fr.org/viewtopic.php?id=369659
+  [1]: http://forum.ubuntu-fr.org/viewtopic.php?id=395921&p=1
+  [2]: http://forum.ubuntu-fr.org/viewtopic.php?id=369659
 
 
