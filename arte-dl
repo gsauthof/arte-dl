@@ -107,6 +107,7 @@ def getvideos(xml, name):
   for line in xml:
     match = url_re.search(line)
     if match:
+      log.debug('Found Url: %s %s' % (match.group(1), match.group(2)))
       urls.append((match.group(1), match.group(2)))
   if len(urls) == 0:
     return

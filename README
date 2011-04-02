@@ -58,4 +58,14 @@ some totem integration:
   [1]: http://forum.ubuntu-fr.org/viewtopic.php?id=395921&p=1
   [2]: http://forum.ubuntu-fr.org/viewtopic.php?id=369659
 
+## Troubleshooting ##
+
+* In case the automatically derived destination filename is already present in
+  the destination directory the script tries to finish a previous started
+  download. If the existing file is unrelated this does not work. Remove the
+  existing file then.
+
+* Arte streams some rated videos only between 23h and 5h. The script tries to
+  detect that. If this auto-detection fails the download does not work and the
+  created file has to be removed before retrying.
 
