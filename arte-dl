@@ -26,6 +26,10 @@ retry_re = re.compile('Download may be incomplete \([^)]+\), try resuming')
 
 packerr_re = re.compile('ERROR: ReadPacket, failed to read RTMP packet header')
 
+restricted_re = re.compile('carton_23h_..\.mp4')
+
+fallback_re = re.compile('fallback_..\.mp4')
+
 errors = False
 
 def fetch(url):
@@ -72,6 +76,18 @@ def flvfetch(url, name):
   n = t
   print 'Trying to download more (filesize: %d MiB).' % (n/1024.0/1024.0)
   time.sleep(3)
+
+
+def check_url(url, name):
+  match = restricted_re.search(url)
+  if match:
+    print >>sys.stderr, 'Video %s is only available between 23h and 5h (yeah, right) ...' % name
+    return False
+  match = fallback_re.search(url)
+  if match:
+    print >>sys.stderr, 'Video %s is not available anymore' % name
+    return False
+  return True
   
 
 def getvideos(xml, name):
@@ -82,8 +98,11 @@ def getvideos(xml, name):
       urls.append((match.group(1), match.group(2)))
   if len(urls) == 0:
     return
+  found = False
   for url in urls:
-    found = False
+    if check_url(url[1], name) == False:
+      errors = True
+      return
     if url[0] == 'hd':
       flvfetch(url[1], name)
       found = True
