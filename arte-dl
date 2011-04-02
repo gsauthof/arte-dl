@@ -10,6 +10,18 @@ import re
 import sys
 import os.path
 import time
+import logging
+
+log = logging.getLogger("artedl")
+log.setLevel(logging.INFO)
+
+handler = logging.StreamHandler()
+handler .setLevel(logging.INFO)
+formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s",
+                              #'%a, %d %b %Y %H:%M:%S')
+                              '%H:%M:%S')
+handler.setFormatter(formatter)
+log.addHandler(handler)
 
 std_headers = {
         'User-Agent': 'Mozilla/5.0 (X11; U; Linux x86_64; en-US; rv:1.9.2.7) Gecko/20100720 Firefox/3.6.7',
@@ -48,7 +60,7 @@ def flvfetch(url, name):
  for a in range(100):
   for i in range(10):
     out = ""
-    print 'Download %s (try: %d)' % (name, i)
+    log.info('Download %s (try: %d)' % (name, i))
     p = subprocess.Popen(
       [ 'flvstreamer',
         '-r', url,
@@ -65,7 +77,7 @@ def flvfetch(url, name):
       match = packerr_re.search(line)
       if match:
         cont = True
-        print 'Packet error - retrying'
+        log.warn('Packet error - retrying')
         time.sleep(4)
     if not cont:
       break
@@ -74,18 +86,18 @@ def flvfetch(url, name):
   if n != 0 and t == n:
     break
   n = t
-  print 'Trying to download more (filesize: %d MiB).' % (n/1024.0/1024.0)
+  log.info('Trying to download more (filesize: %d MiB).' % (n/1024.0/1024.0) )
   time.sleep(3)
 
 
 def check_url(url, name):
   match = restricted_re.search(url)
   if match:
-    print >>sys.stderr, 'Video %s is only available between 23h and 5h (yeah, right) ...' % name
+    log.error('Video %s is only available between 23h and 5h (yeah, right) ...' % name )
     return False
   match = fallback_re.search(url)
   if match:
-    print >>sys.stderr, 'Video %s is not available anymore' % name
+    log.error('Video %s is not available anymore' % name)
     return False
   return True
   
@@ -109,7 +121,7 @@ def getvideos(xml, name):
       break
   if found == False:
     errors = True
-    print >>sys.stderr, 'Could not find HD url for %s' % name
+    log.error('Could not find HD url for %s' % name)
 
 
 def download(url):
@@ -129,11 +141,16 @@ def test():
     ret = subprocess.call(['flvstreamer', '-h'],
         stdout=(file(os.path.devnull, 'w')), stderr=subprocess.STDOUT)
     if ret != 0:
-      print >>sys.stderr, 'Error executing flvstreamer: %d exit-code' % ret
+      log.error('Error executing flvstreamer: %d exit-code' % ret)
       sys.exit(13)
   except (OSError, IOError), err:
-    print >>sys.stderr, 'Could not call flvstreamer: %s' % str(err)
+    log.error('Could not call flvstreamer: %s' % str(err) )
     sys.exit(23)
+
+def enable_debug_output(option, opt, value, parser):
+  log.setLevel(logging.DEBUG)
+  handler.setLevel(logging.DEBUG)
+  log.debug('Enable DEBUG output')
 
 # call e.g.:
 # ./arte-dl http://videos.arte.tv/de/videos/hauptsache_haltbar-3334828.html
@@ -147,6 +164,8 @@ if __name__ == '__main__':
   )
   opts.add_option('-h', '--help',
     action='help', help='this screen')
+  opts.add_option('-v', '--verbose',
+    action='callback', callback=enable_debug_output)
   (o, args) = opts.parse_args()
   test()
   for url in args:
