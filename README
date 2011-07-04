@@ -60,12 +60,19 @@ some totem integration:
 
 ## Troubleshooting ##
 
-* In case the automatically derived destination filename is already present in
-  the destination directory the script tries to finish a previous started
-  download. If the existing file is unrelated this does not work. Remove the
-  existing file then.
+* In case that the automatically derived destination filename is already
+  present in the destination directory the script tries to finish a previous
+  started download. If the existing file is unrelated this does not work. Remove
+  the existing file then.
 
 * Arte streams some rated videos only between 23h and 5h. The script tries to
   detect that. If this auto-detection fails the download does not work and the
   created file has to be removed before retrying.
+
+* Arte-dl checks the FLVStreamer version (currently at least v2.1 is needed)
+  and prints a diagnostic if there is a problem.  Perhaps the content delivery
+  network will introduce (new) incompatibilities in the future - thus when
+  downloading stops working at all try a more recent flvstreamer version and
+  report the issue to the arte-dl author.
+
 
