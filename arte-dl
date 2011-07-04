@@ -67,7 +67,9 @@ def flvfetch(url, name):
         '-e',
         '--flv',
         name ], stdout=subprocess.PIPE, stderr=subprocess.STDOUT )
-    (out, ret) = p.communicate()
+    log.debug('Calling: flvstreamer -r %s -e --flv %s ' % (url, name))
+    (out, err) = p.communicate()
+    log.debug('Output:\n%s\n' % out)
     cont = False
     line = out
     match = retry_re.search(line)
@@ -136,14 +138,30 @@ def download(url):
       getvideos(xml, name)
       break
 
+flvver_re = re.compile('([a-zA-Z]+) v([0-9.]+)([a-z])?([0-9])?')
+
 def test():
   import os 
   try:
-    ret = subprocess.call(['flvstreamer', '-h'],
-        stdout=(file(os.path.devnull, 'w')), stderr=subprocess.STDOUT)
-    if ret != 0:
+    p = subprocess.Popen(['flvstreamer', '-h'],
+        stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    (out, err) = p.communicate()
+    if p.returncode != 0:
       log.error('Error executing flvstreamer: %d exit-code' % ret)
       sys.exit(13)
+    first = out.splitlines()[0]
+    match = flvver_re.search(first)
+    if match:
+      if match.group(1) != 'FLVStreamer':
+        log.error('Unexpected FLVStreamer name: %s' % match.group(1))
+        sys.exit(14)
+      if float(match.group(2)) < 2.1:
+        log.error('Need FLVstreamer version >= 2.1 (found %s)'
+            % match.group(2))
+        sys.exit(15)
+    else:
+      log.error('Could not match FLVStreamer version string: %s' % first)
+      sys.exit(16)
   except (OSError, IOError), err:
     log.error('Could not call flvstreamer: %s' % str(err) )
     sys.exit(23)
