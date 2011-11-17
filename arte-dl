@@ -30,7 +30,7 @@ std_headers = {
         'Accept-Language': 'en-us,en;q=0.5',
 }
 
-id_re = re.compile('{ajaxUrl:.(/../do_delegate/videos/)([^,]+),view,commentForm.html')
+id_re = re.compile('ajaxUrl:.?.(/../do_delegate/videos/)([^,]+),view,commentForm.html')
 
 url_re = re.compile('<url quality="([^"]+)">([^<]+)<')
 
@@ -128,10 +128,13 @@ def getvideos(xml, name):
 
 
 def download(url):
+  log.debug('Fetching: %s' % url)
   lines = fetch(url)
+  log.debug('Fetchid: %s' % lines)
   for line in lines:
     match = id_re.search(line)
     if (match):
+      log.debug('Matched: |%s|%s|' % (match.group(1), match.group(2)))
       xmlurl = 'http://videos.arte.tv%s%s,view,asPlayerXml.xml' % (match.group(1), match.group(2))
       name = '%s.m4v' % match.group(2)
       xml = fetch(xmlurl)
