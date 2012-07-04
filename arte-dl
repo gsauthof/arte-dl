@@ -30,7 +30,8 @@ std_headers = {
         'Accept-Language': 'en-us,en;q=0.5',
 }
 
-id_re = re.compile('ajaxUrl:.?.(/../do_delegate/videos/)([^,]+),view,commentForm.html')
+# class="vote {ajaxUrl:\'/de/do_delegate/videos/hauptsache_haltbar-6772040,view,ratingForm.html\'}"
+id_re = re.compile('class="vote .ajaxUrl:..?(/../do_delegate/videos/)([^,]+),view,ratingForm.html')
 
 url_re = re.compile('<url quality="([^"]+)">([^<]+)<')
 
@@ -45,6 +46,7 @@ fallback_re = re.compile('fallback_..\.mp4')
 errors = False
 
 def fetch(url):
+  log.debug('Fetching url: %s' % url)
   request = urllib2.Request(url, None, std_headers)
   answer = urllib2.urlopen(request)
   str = answer.read()
@@ -112,6 +114,7 @@ def getvideos(xml, name):
       log.debug('Found Url: %s %s' % (match.group(1), match.group(2)))
       urls.append((match.group(1), match.group(2)))
   if len(urls) == 0:
+    log.error('Did not find any urls!')
     return
   found = False
   for url in urls:
@@ -135,11 +138,13 @@ def download(url):
     match = id_re.search(line)
     if (match):
       log.debug('Matched: |%s|%s|' % (match.group(1), match.group(2)))
-      xmlurl = 'http://videos.arte.tv%s%s,view,asPlayerXml.xml' % (match.group(1), match.group(2))
+      # http://videos.arte.tv/de/do_delegate/videos/hauptsache_haltbar-6772040,view,strmVideoAsPlayerXml.xml
+      xmlurl = 'http://videos.arte.tv%s%s,view,strmVideoAsPlayerXml.xml' % (match.group(1), match.group(2))
       name = '%s.m4v' % match.group(2)
       xml = fetch(xmlurl)
       getvideos(xml, name)
-      break
+      return
+  log.error('Did not find any ID!')
 
 flvver_re = re.compile('([a-zA-Z]+) v([0-9.]+)([a-z])?([0-9])?')
 
