@@ -130,7 +130,7 @@ def getvideos(xml, name):
       errors = True
       return
     log.debug('Found FLV URL %s (quality: %s)' % (url[1], url[0]))
-    if found == False and url[0] == 'hd':
+    if found == False and url[0] == options.quality:
       flvfetch(url[1], name)
       found = True
   if found == False:
@@ -204,6 +204,9 @@ if __name__ == '__main__':
   opts.add_option('-n', '--no-download',
     help='just output video url instead of downloading',
     action='store_false', dest="download", default=True)
+  opts.add_option('--low-quality',
+    help='download low quality version (high-quality is the default)',
+    action='store_const', dest="quality", default='hd', const='sd')
   (options, args) = opts.parse_args()
   test()
   for url in args:
