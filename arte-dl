@@ -1,8 +1,10 @@
 #!/usr/bin/env python2
 
-# 2010, Georg Sauthoff, gsauthof@techfak.uni-bielefeld.de,
-#                       gsauthof@sdf.lonestar.org
+# 2010-2012 Georg Sauthoff, mail@georg.so,
+#                           gsauthof@sdf.lonestar.org
 # License: GPL v3+
+
+program_version = "1.0"
 
 import subprocess
 import urllib2
@@ -186,7 +188,7 @@ if __name__ == '__main__':
   import optparse
   opts = optparse.OptionParser(
     usage='Usage: %prog  (option)* (url)+',
-    version='tip hash',
+    version=program_version,
     conflict_handler='resolve',
   )
   opts.add_option('-h', '--help',
