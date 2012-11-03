@@ -60,6 +60,12 @@ def fetch(url):
 #<url quality="sd">rtmp://artestras.fcod.llnwd.net/a3903/o35/MP4:geo/videothek/EUR_DE_FR/arteprod/A7_SGT_ENC_02_042206-000-A_PG_MQ_DE?h=f31e2b017f30ca3c8d44e5410a9bf272</url>
 
 def flvfetch(url, name):
+ if not options.download:
+   print url
+   return
+
+ log.debug('Fetching URL %s (name: %s)' % (url, name))
+
  n = 0
  for a in range(100):
   for i in range(10):
@@ -99,7 +105,7 @@ def flvfetch(url, name):
 def check_url(url, name):
   match = restricted_re.search(url)
   if match:
-    log.error('Video %s is only available between 23h and 5h (yeah, right) ...' % name )
+    log.error('Video %s is only available between 23h and 5h (yeah, right ...)' % name )
     return False
   match = fallback_re.search(url)
   if match:
@@ -123,10 +129,10 @@ def getvideos(xml, name):
     if check_url(url[1], name) == False:
       errors = True
       return
-    if url[0] == 'hd':
+    log.debug('Found FLV URL %s (quality: %s)' % (url[1], url[0]))
+    if found == False and url[0] == 'hd':
       flvfetch(url[1], name)
       found = True
-      break
   if found == False:
     errors = True
     log.error('Could not find HD url for %s' % name)
@@ -195,7 +201,10 @@ if __name__ == '__main__':
     action='help', help='this screen')
   opts.add_option('-v', '--verbose',
     action='callback', callback=enable_debug_output)
-  (o, args) = opts.parse_args()
+  opts.add_option('-n', '--no-download',
+    help='just output video url instead of downloading',
+    action='store_false', dest="download", default=True)
+  (options, args) = opts.parse_args()
   test()
   for url in args:
     download(url)
