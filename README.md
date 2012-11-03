@@ -15,7 +15,7 @@ e.g.
 ## Motivation ##
 
 [Arte][arte] is this [public television][public] channel, payed by the people of
-germany/france. Some content is [available for 7 (sic!) days][7day] at
+Germany/France. Some content is [available for 7 (sic!) days][7day] at
 the website. But only viewable within a flash-application. There
 are several reasons to avoid [Adobe Flash][flash].
 For example uncountable security problems, the fact that it is
@@ -39,8 +39,22 @@ The name is inspired by the nice tool [youtube-dl](https://github.com/rg3/youtub
 
 I appreciate feedback and comments:
 
-    gsauthof@techfak.uni-bielefeld.de
+    mail@georg.so
     gsauthof@sdf.lonestar.org
+
+## Repositories ##
+
+arte-dl is available via [Bitbucket][bitbucket] and [GitHub][github]:
+
+    https://bitbucket.org/gsauthof/arte-dl
+    https://github.com/gsauthof/arte-dl
+
+Historically, I started with the Bitbucket repository first, but now (2012-11) I
+have created an 'official' mirror on GitHub as well. Rationale behind it is
+making it easier for GitHub users (who don't have a Bitbucket account) to fork
+and to contribute.
+
+Until further notice I'll keep both repositories in sync.
 
 ## Related Stuff ##
 
@@ -50,7 +64,7 @@ supports arte.tv content (didn't try it).
 Someone wrote an [example php-script](http://www.galipe.net/example/plussept.php)
 how to extract useful data from the arte feeds.
 
-Some [french][1] [threads][2] mention a python GTK inteface for arte and
+Some [french][1] [threads][2] mention a python GTK interface for Arte and
 some totem integration.
 
   [1]: http://forum.ubuntu-fr.org/viewtopic.php?id=395921&p=1
@@ -79,4 +93,6 @@ some totem integration.
 [7day]: http://de.wikipedia.org/wiki/Depublizieren
 [public]: http://en.wikipedia.org/wiki/Public_broadcasting
 [jmstv]: http://de.wikipedia.org/wiki/Jugendmedienschutz-Staatsvertrag
+[bitbucket]: https://bitbucket.org/gsauthof/arte-dl
+[github]: https://github.com/gsauthof/arte-dl
 
