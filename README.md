@@ -1,3 +1,20 @@
+## Historic Note ##
+
+When I started arte-dl, there weren't usable alternatives for the command line
+available. But fortunately, this situation has changed. In the meantime
+[youtube-dl][youtubedl] support for sites besides youtube grew in astonishing
+ways. Currently, it supports nearly every video website imaginable - including
+[Arte][arte].
+
+Thus, I decided to stop mainting my arte download script. I only keep it online
+for historic purposes.
+
+As of 2016, I highly recommend youtube-dl for all arte downloading needs.
+
+2016-05-18, Georg Sauthoff <mail@georg.so>
+
+## Introduction ##
+
 arte-dl is a command line tool for downloading embedded videos
 from [arte.tv][arte] to be able to view the stuff without having to use
 [Adobe Flash][flash].
@@ -8,7 +25,7 @@ from [arte.tv][arte] to be able to view the stuff without having to use
 
 e.g.
 
-    $ ./arte http://videos.arte.tv/de/videos/leben_ohne_schadstoffe_-3334834.html
+    $ ./arte-dl http://videos.arte.tv/de/videos/leben_ohne_schadstoffe_-3334834.html
     Download leben_ohne_schadstoffe_-3334838.m4v (try: 0)
     Download leben_ohne_schadstoffe_-3334838.m4v (try: 1)
 
@@ -33,7 +50,7 @@ flvstreamer).
 
 The license is GPL v3+.
 
-The name is inspired by the nice tool [youtube-dl](https://github.com/rg3/youtube-dl).
+The name is inspired by the nice tool [youtube-dl][youtubedl].
 
 ## Feedback ##
 
@@ -44,19 +61,28 @@ I appreciate feedback and comments:
 
 ## Repositories ##
 
-arte-dl is available via [Bitbucket][bitbucket] and [GitHub][github]:
+arte-dl is available via [GitHub][github]:
 
-    https://bitbucket.org/gsauthof/arte-dl
     https://github.com/gsauthof/arte-dl
 
-Historically, I started with the Bitbucket repository first, but now (2012-11) I
-have created an 'official' mirror on GitHub as well. Rationale behind it is
+Previously, it was also available via [Bitbucket][bitbucket]:
+
+    https://bitbucket.org/gsauthof/arte-dl
+
+Historically, I started with the Bitbucket repository first, but around 2012-11 I
+created an 'official' mirror on GitHub as well. Rationale behind it was
 making it easier for GitHub users (who don't have a Bitbucket account) to fork
 and to contribute.
 
-Until further notice I'll keep both repositories in sync.
+Since the code is only of intereset for historic reasons, it is sufficient
+to keep it in one public repository. Thus, I've closed the Bitbucket one.
 
 ## Related Stuff ##
+
+Nowadays (as of 2016) [youtube-dl][youtubedl] also supports downloading videos
+from arte. It is widely available, easy to use and actively maintained. An example call:
+
+    $ youtube-dl 'http://www.arte.tv/guide/de/047156-000/fukushima-chronik-eines-desasters'
 
 It looks like the [Mediathek Java GUI](http://zdfmediathk.sourceforge.net/index.html)
 supports arte.tv content (didn't try it).
@@ -69,6 +95,13 @@ some totem integration.
 
   [1]: http://forum.ubuntu-fr.org/viewtopic.php?id=395921&p=1
   [2]: http://forum.ubuntu-fr.org/viewtopic.php?id=369659
+
+There is also [any-dl][anydl]. The scope of the [any-dl][anydl] is similar to
+the one of `youtube-dl`. The difference is that it provides a Domain Specific
+Language (DSL) for adding new sites. It comes with a configuration file that
+include several example DSL snippets - including one for Arte. For Youtube and
+Vimeo it externally calls `youtube-dl`.
+
 
 ## Troubleshooting ##
 
@@ -95,4 +128,6 @@ some totem integration.
 [jmstv]: http://de.wikipedia.org/wiki/Jugendmedienschutz-Staatsvertrag
 [bitbucket]: https://bitbucket.org/gsauthof/arte-dl
 [github]: https://github.com/gsauthof/arte-dl
+[youtubedl]: https://github.com/rg3/youtube-dl
+[anydl]: https://github.com/klartext/any-dl
 
